@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import usg.lostlink.server.enums.ItemStatus;
 
 import java.util.Date;
 

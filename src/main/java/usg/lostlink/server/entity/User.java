@@ -1,7 +1,33 @@
 package usg.lostlink.server.entity;
 
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import usg.lostlink.server.enums.UserStatus;
 
+import java.util.*;
+
+
+@Getter
+@Setter
 @NoArgsConstructor
-public class User extends AuditData {
+@AllArgsConstructor
+public class User{
+
+    private String id;
+
+    private String profilePhoto;
+
+    private String name;
+
+    private String surname;
+
+    private String username;
+
+    private String password;
+
+    private UserStatus status;
+
+    private Date createdDate;
+
+    private Date updatedDate;
 }
