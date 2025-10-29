@@ -26,7 +26,8 @@ public class User{
     private String password;
 
     private UserStatus status;
-
+    // User classi Auditi extend ede bilmez cunki Auditin fieldlerinde User subclassi istifade olunur.
+    // Onun yerine 2 dene date fieldini Auditden bura elave edirem.
     private Date createdDate;
 
     private Date updatedDate;
