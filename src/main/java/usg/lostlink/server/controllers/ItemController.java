@@ -1,28 +1,35 @@
 package usg.lostlink.server.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.ItemDto;
-import usg.lostlink.server.entity.Item;
-import usg.lostlink.server.entity.Location;
+import usg.lostlink.server.repository.ItemRepository;
+import usg.lostlink.server.service.ItemService;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/v1/items")
+@RequiredArgsConstructor
 public class ItemController {
+
+    private ItemService itemService;
+
 
     @PostMapping()
     public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto itemDto) {
-        ItemDto item = new ItemDto(itemDto.getItemName(),
-                itemDto.getItemDescription(),
-                itemDto.getFoundLocation(),
-                itemDto.getSubmitterEmail(),
-                itemDto.getImage()
-        );
-
+        ItemDto item = itemService.createItem(itemDto);
         return ResponseEntity.ok().body(item);
-
     }
+
+    /*
+    @GetMapping("/all")
+    public String getListedItems() {
+        // ArrayList<ItemDto> listedItems = itemService.getListedItems();
+        return new String("salam");
+    }
+    */
+
 }

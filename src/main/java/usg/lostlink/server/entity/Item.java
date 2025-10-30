@@ -23,7 +23,7 @@ public class Item extends AuditData {
 
     private String itemDescription;
 
-    private Location foundLocation;
+    private String foundLocation;
 
     private String submitterEmail;
 
