@@ -1,20 +1,19 @@
-version: '3.8'
-
 services:
-  backend:
+  lostlink-server:
     build: .
+    container_name: lostlink-backend
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/lostlink
+      SPRING_DATASOURCE_URL: jdbc:postgresql://lostlink-database:5432/lostlink
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
-      - db
+      - lostlink-database
 
-  db:
+  lostlink-database:
     image: postgres:16
-    container_name: lostlink-db
+    container_name: lostlink-database
     environment:
       POSTGRES_DB: lostlink
       POSTGRES_USER: postgres
