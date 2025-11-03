@@ -76,4 +76,6 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);
     }
+
+
 }

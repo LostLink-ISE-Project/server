@@ -16,18 +16,24 @@ public class ItemController {
     private final ItemService itemService;
 
 
+
     @PostMapping()
     public ResponseEntity<Item> createItem(@RequestBody ItemDto itemDto) {
         Item item = itemService.createItem(itemDto);
         return ResponseEntity.ok().body(item);
     }
 
-    /*
-    @GetMapping("/all")
-    public String getListedItems() {
-        // ArrayList<ItemDto> listedItems = itemService.getListedItems();
-        return new String("salam");
+    @GetMapping()
+    public ResponseEntity<?> getItems(@RequestParam(required = false) String status) {
+        boolean isAdmin = itemService.isAuthenticatedAdmin();
+
+        // Admin request with filter
+        if (isAdmin && status != null) {
+            return ResponseEntity.ok(itemService.getItemsByStatus(status));
+        }
+
+        // Non-admin or public request
+        return ResponseEntity.ok(itemService.getPublicItems());
     }
-    */
 
 }
