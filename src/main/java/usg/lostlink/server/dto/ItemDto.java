@@ -14,18 +14,21 @@ public class ItemDto {
     private String foundLocation;
     private String submitterEmail;
     private String image;
+    private String givenLocation;
 
     public ItemDto(String itemName,
                    String itemDescription,
                    String foundLocation,
                    String submitterEmail,
-                   String image) {
+                   String image,
+                   String givenLocation) {
 
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.foundLocation = foundLocation;
         this.submitterEmail = submitterEmail;
         this.image = image;
+        this.givenLocation = givenLocation;
     }
 
 }
