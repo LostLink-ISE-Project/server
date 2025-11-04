@@ -7,6 +7,8 @@ import usg.lostlink.server.dto.ItemDto;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.service.ItemService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/items")
 @RequiredArgsConstructor
@@ -24,16 +26,13 @@ public class ItemController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getItems(@RequestParam(required = false) String status) {
-        boolean isAdmin = itemService.isAuthenticatedAdmin();
+    public ResponseEntity<List<?>> getItems(@RequestParam(defaultValue = "false") boolean full) {
+        return ResponseEntity.ok(itemService.getItems(full));
+    }
 
-        // Admin request with filter
-        if (isAdmin && status != null) {
-            return ResponseEntity.ok(itemService.getItemsByStatus(status));
-        }
-
-        // Non-admin or public request
-        return ResponseEntity.ok(itemService.getPublicItems());
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getItemById(@PathVariable Long id, @RequestParam(defaultValue = "false") boolean full) {
+        return ResponseEntity.ok(itemService.getItemById(id,full));
     }
 
 }

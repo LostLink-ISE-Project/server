@@ -33,6 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/v1/auth/login").permitAll()
                         .requestMatchers("/v1/auth/me","/v1/report").authenticated()
                         .requestMatchers(HttpMethod.GET, "/v1/items").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/items").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/items/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

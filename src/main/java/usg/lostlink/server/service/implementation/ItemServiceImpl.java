@@ -6,13 +6,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.ItemDto;
+import usg.lostlink.server.dto.PublicItemDto;
 import usg.lostlink.server.entity.Item;
+import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
 import usg.lostlink.server.repository.ItemRepository;
 import usg.lostlink.server.repository.UserRepository;
 import usg.lostlink.server.service.ItemService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +33,30 @@ public class ItemServiceImpl implements ItemService {
                         itemDto.getItemDescription(),
                         itemDto.getFoundLocation(),
                         itemDto.getSubmitterEmail(),
-                        ItemStatus.SUBMITTED,
                         itemDto.getGivenLocation());
+
+        // ✅ Get current authentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() &&
+                !"anonymousUser".equals(authentication.getPrincipal())) {
+
+            // ✅ Authenticated admin — set audit fields
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            Optional<User> user = userRepository.findByUsername(username);
+
+            user.ifPresent(u -> {
+                        item.setCreatedBy(u.getUsername());
+                        item.setUpdatedBy(u.getUsername());
+                        item.setItemStatus(ItemStatus.LISTED);
+            });
+        }
+        else{
+            item.setCreatedBy("system");
+            item.setUpdatedBy("system");
+            item.setItemStatus(ItemStatus.SUBMITTED);
+        }
+
 
         itemRepository.save(item);
         return item;
@@ -65,10 +91,55 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByItemStatus(status);
     }
 
-    public List<Item> getPublicItems() {
-        // Return only approved/visible items
-        return itemRepository.findByItemStatus(ItemStatus.LISTED);
+    public List<?> getItems(boolean fullRequested) {
+        boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        if (isAuthenticated && fullRequested) {
+            // Admin: full access to all items
+            return (List<Item>) itemRepository.findAll();
+        } else {
+            // Public user: only listed items, mapped to public DTO
+            List<Item> listedItems = itemRepository.findByItemStatus(ItemStatus.LISTED);
+
+            return listedItems.stream()
+                    .map(item -> new PublicItemDto(
+                            item.getItemName(),
+                            item.getItemDescription(),
+                            item.getFoundLocation(),
+                            item.getGivenLocation(),
+                            item.getImage(),
+                            item.getItemStatus(),
+                            item.getCreatedDate()
+                    ))
+                    .collect(Collectors.toList());
+        }
     }
 
+    @Override
+    public Object getItemById(Long id ,boolean full) {
+        boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+        if (isAuthenticated && full) {
+            // Admin: full access to all items
+            return itemRepository.findItemById(id);
+        } else {
+            // Public user: only listed items, mapped to public DTO
+            Item item = itemRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Item not found"));
+
+            PublicItemDto dto = new PublicItemDto(
+                    item.getItemName(),
+                    item.getItemDescription(),
+                    item.getFoundLocation(),
+                    item.getGivenLocation(),
+                    item.getImage(),
+                    item.getItemStatus(),
+                    item.getCreatedDate());
+            return dto;
+        }
+    }
 }

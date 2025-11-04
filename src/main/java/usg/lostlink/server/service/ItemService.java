@@ -11,5 +11,8 @@ public interface ItemService {
     Item createItem(ItemDto itemDto);
     public boolean isAuthenticatedAdmin();
     public List<Item> getItemsByStatus(String statusStr);
-    public List<Item> getPublicItems();
+    public List<?> getItems(boolean fullRequested);
+
+    public Object getItemById(Long id,boolean full);
 }
+

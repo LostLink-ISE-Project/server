@@ -52,7 +52,6 @@ public class Item {
                           String itemDescription,
                           String foundLocation,
                           String submitterEmail,
-                          ItemStatus itemStatus,
                           String givenLocation) {
         Item item = new Item();
         item.setImage(image);
@@ -60,12 +59,10 @@ public class Item {
         item.setItemDescription(itemDescription);
         item.setFoundLocation(foundLocation);
         item.setSubmitterEmail(submitterEmail);
-        item.setItemStatus(itemStatus);
         item.setGivenLocation(givenLocation);
         item.setCreatedDate(new Date());
         item.setUpdatedDate(new Date());
-        item.setCreatedBy("system");
-        item.setUpdatedBy("system");
+
         return item;
     }
 }

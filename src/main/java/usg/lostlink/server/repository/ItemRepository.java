@@ -15,4 +15,6 @@ public interface ItemRepository extends CrudRepository<Item,Long> {
     long countByItemStatus(ItemStatus status);
 
     List<Item> findByItemStatus(ItemStatus status);
+
+    Item findItemById(Long id);
 }
