@@ -1,12 +1,9 @@
 package usg.lostlink.server.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UpdateUserDto {
-    private String name;
-    private String surname;
-    private String profilePhoto;
+  private String name;
+  private String surname;
 }
