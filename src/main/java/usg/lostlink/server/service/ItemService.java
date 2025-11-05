@@ -2,6 +2,7 @@ package usg.lostlink.server.service;
 
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.ItemDto;
+import usg.lostlink.server.dto.UpdateItemStatusDto;
 import usg.lostlink.server.entity.Item;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public interface ItemService {
     public List<?> getItems(boolean fullRequested);
 
     public Object getItemById(Long id,boolean full);
+
+    Item updateItemStatus(Long itemId, UpdateItemStatusDto dto);
+
+    public void deleteItem(Long itemId);
 }
 

@@ -14,7 +14,7 @@ import java.util.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "app_user")
+@Table(name = "users")
 public class User{
 
     @Id
@@ -37,6 +37,5 @@ public class User{
     private Date createdDate;
 
     private Date updatedDate;
-
 
 }

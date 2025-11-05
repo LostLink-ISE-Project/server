@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.LoginDto;
 import usg.lostlink.server.dto.ResetPasswordDto;
+import usg.lostlink.server.dto.UpdateCurrentUserDto;
 import usg.lostlink.server.dto.UpdateUserDto;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.service.implementation.AuthService;
@@ -16,7 +17,7 @@ public class AuthController {
 
 
     private final AuthService authService;
-
+    //public user can access
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
         String jwtToken = authService.login(loginDto);
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<User> updateCurrentUser(@RequestBody UpdateUserDto updateUserDto) {
+    public ResponseEntity<User> updateCurrentUser(@RequestBody UpdateCurrentUserDto updateUserDto) {
         User updatedUser = authService.updateCurrentUser(updateUserDto);
         return ResponseEntity.ok(updatedUser);
     }

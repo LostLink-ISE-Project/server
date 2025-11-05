@@ -1,5 +1,6 @@
 package usg.lostlink.server.service.implementation;
 
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.ItemDto;
 import usg.lostlink.server.dto.PublicItemDto;
+import usg.lostlink.server.dto.UpdateItemStatusDto;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
@@ -142,4 +144,36 @@ public class ItemServiceImpl implements ItemService {
             return dto;
         }
     }
+
+    @Override
+    public Item updateItemStatus(Long itemId, UpdateItemStatusDto dto) {
+        Item item = itemRepository.findById(itemId)
+            .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        item.setItemStatus(dto.getStatus());
+        item.setUpdatedDate(new Date());
+
+        // Optional: track admin who updated
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            String username = auth.getName();
+            item.setUpdatedBy(username);
+        }
+
+        return itemRepository.save(item);
+    }
+
+
+    public void deleteItem(Long itemId) {
+        Item item = itemRepository.findById(itemId)
+            .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        if (item.getItemStatus() != ItemStatus.SUBMITTED) {
+            throw new IllegalStateException("Only items with status SUBMITTED can be deleted.");
+        }
+
+        itemRepository.delete(item);
+    }
+
+
 }

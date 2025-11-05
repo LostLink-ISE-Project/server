@@ -1,12 +1,28 @@
 package usg.lostlink.server.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 //Heleki bu class istifade olunmayacaq, itemda foundLocation String kimi
 //qebul edilecek, givenlocation(Office) ise option kimi secilib user terefden
 //bize gonderilecek
-public class Location extends AuditData {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Location {
 
-
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String slug;
 
@@ -14,4 +30,11 @@ public class Location extends AuditData {
 
     private String description;
 
+    private Date createdDate;
+
+    private Date updatedDate;
+
+    private String createdBy;
+
+    private String updatedBy;
 }

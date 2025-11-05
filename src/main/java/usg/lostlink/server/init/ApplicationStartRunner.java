@@ -19,6 +19,7 @@ public class ApplicationStartRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        /*
         User newUser = new User();
         newUser.setProfilePhoto("https://example.com/photos/default.jpg");
         newUser.setName("Rasul");
@@ -31,7 +32,7 @@ public class ApplicationStartRunner implements CommandLineRunner {
         newUser.setUpdatedDate(new Date());
         userRepository.save(newUser);
         System.out.println(newUser.toString());
-
+    */
 
     }
 }

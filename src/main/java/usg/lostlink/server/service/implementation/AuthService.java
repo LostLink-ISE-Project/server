@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.LoginDto;
 import usg.lostlink.server.dto.ResetPasswordDto;
-import usg.lostlink.server.dto.UpdateUserDto;
+import usg.lostlink.server.dto.UpdateCurrentUserDto;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.repository.UserRepository;
 import usg.lostlink.server.service.implementation.JwtService;
@@ -48,7 +48,7 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public User updateCurrentUser(UpdateUserDto dto) {
+    public User updateCurrentUser(UpdateCurrentUserDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
