@@ -2,18 +2,18 @@ package usg.lostlink.server.service.implementation;
 
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import usg.lostlink.server.dto.ItemDto;
-import usg.lostlink.server.dto.PublicItemDto;
-import usg.lostlink.server.dto.UpdateItemStatusDto;
+import usg.lostlink.server.dto.*;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
 import usg.lostlink.server.repository.ItemRepository;
 import usg.lostlink.server.repository.UserRepository;
+import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.ItemService;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public Item createItem(ItemDto itemDto) {
+    public ApiResponse<Object> createItem(ItemDto itemDto) {
         Item item = Item.of( itemDto.getImage(),
                         itemDto.getItemName(),
                         itemDto.getItemDescription(),
@@ -40,8 +40,7 @@ public class ItemServiceImpl implements ItemService {
         // ✅ Get current authentication
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated() &&
-                !"anonymousUser".equals(authentication.getPrincipal())) {
+        if (isAuthenticatedAdmin()) {
 
             // ✅ Authenticated admin — set audit fields
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
@@ -52,6 +51,7 @@ public class ItemServiceImpl implements ItemService {
                         item.setUpdatedBy(u.getUsername());
                         item.setItemStatus(ItemStatus.LISTED);
             });
+            return ApiResponse.success(null,"Item has been created, and status is set to SUBMITTED.", HttpStatus.CREATED);
         }
         else{
             item.setCreatedBy("system");
@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
 
 
         itemRepository.save(item);
-        return item;
+        return ApiResponse.success(null,"Item has been created.", HttpStatus.CREATED);
     }
 
     public boolean isAuthenticatedAdmin() {
@@ -145,24 +145,22 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+
     @Override
-    public Item updateItemStatus(Long itemId, UpdateItemStatusDto dto) {
+    public void updateItemStatus(Long itemId, UpdateItemStatusDto dto) {
         Item item = itemRepository.findById(itemId)
-            .orElseThrow(() -> new RuntimeException("Item not found"));
+                .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
+
+        // Get current authenticated username from SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
         item.setItemStatus(dto.getStatus());
+        item.setUpdatedBy(username);
         item.setUpdatedDate(new Date());
 
-        // Optional: track admin who updated
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
-            String username = auth.getName();
-            item.setUpdatedBy(username);
-        }
-
-        return itemRepository.save(item);
+        itemRepository.save(item);
     }
-
 
     public void deleteItem(Long itemId) {
         Item item = itemRepository.findById(itemId)

@@ -24,15 +24,15 @@ public class ApplicationStartRunner implements CommandLineRunner {
         newUser.setProfilePhoto("https://example.com/photos/default.jpg");
         newUser.setName("Rasul");
         newUser.setSurname("Mohsumov");
-        newUser.setUsername("resul");
-        newUser.setPassword(passwordEncoder.encode("resul")); // Always encode passwords!
+        newUser.setUsername("elem");
+        newUser.setPassword(passwordEncoder.encode("elem")); // Always encode passwords!
         newUser.setStatus(UserStatus.ACTIVE); // Assuming you have an enum UserStatus with ACTIVE
 
         newUser.setCreatedDate(new Date());
         newUser.setUpdatedDate(new Date());
         userRepository.save(newUser);
         System.out.println(newUser.toString());
-    */
+*/
 
     }
 }

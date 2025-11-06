@@ -1,10 +1,12 @@
 package usg.lostlink.server.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.ItemDto;
-import usg.lostlink.server.entity.Item;
+import usg.lostlink.server.dto.UpdateItemStatusDto;
+import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.ItemService;
 
 import java.util.List;
@@ -20,9 +22,8 @@ public class ItemController {
 
 
     @PostMapping()
-    public ResponseEntity<Item> createItem(@RequestBody ItemDto itemDto) {
-        Item item = itemService.createItem(itemDto);
-        return ResponseEntity.ok().body(item);
+    public ApiResponse<Object> createItem(@RequestBody ItemDto itemDto) {
+        return itemService.createItem(itemDto);
     }
 
     @GetMapping()
@@ -35,10 +36,18 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemById(id,full));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<Object>> updateItemStatus(
+            @PathVariable Long id,
+            @RequestBody UpdateItemStatusDto dto) {
+        itemService.updateItemStatus(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(null, "Item's status updated.", HttpStatus.OK));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Item deleted", HttpStatus.NO_CONTENT));
     }
 
 
