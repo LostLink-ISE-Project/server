@@ -1,8 +1,12 @@
 package usg.lostlink.server.service.implementation;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +15,7 @@ import usg.lostlink.server.dto.*;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
+import usg.lostlink.server.mapper.PublicItemMapper;
 import usg.lostlink.server.repository.ItemRepository;
 import usg.lostlink.server.repository.UserRepository;
 import usg.lostlink.server.response.ApiResponse;
@@ -20,10 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -37,12 +42,10 @@ public class ItemServiceImpl implements ItemService {
                         itemDto.getSubmitterEmail(),
                         itemDto.getGivenLocation());
 
-        // ✅ Get current authentication
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (isAuthenticatedAdmin()) {
 
-            // ✅ Authenticated admin — set audit fields
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
             Optional<User> user = userRepository.findByUsername(username);
 
@@ -59,99 +62,63 @@ public class ItemServiceImpl implements ItemService {
             item.setItemStatus(ItemStatus.SUBMITTED);
         }
 
-
         itemRepository.save(item);
         return ApiResponse.success(null,"Item has been created.", HttpStatus.CREATED);
     }
 
-    public boolean isAuthenticatedAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Check if someone is authenticated
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return false;
-        }
-
-        // Principal must be your UserDetails implementation
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails userDetails) {
-            // Since you said any valid user is admin, return true if user exists in DB
-            return userRepository.findByUsername(userDetails.getUsername()).isPresent();
-        }
-
-        return false;
-    }
-
-    public List<Item> getItemsByStatus(String statusStr) {
-        ItemStatus status;
-        try {
-            status = ItemStatus.valueOf(statusStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + statusStr);
-        }
-
-        return itemRepository.findByItemStatus(status);
-    }
-
-    public List<?> getItems(boolean fullRequested) {
+    @Override
+    public List<?> getItems(boolean fullRequested,ItemStatus status) {
         boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
                 !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        if (isAuthenticated && fullRequested) {
-            // Admin: full access to all items
-            return (List<Item>) itemRepository.findAll();
-        } else {
+        if (isAuthenticated) {
+            // Admin: full access to all items. if full = true then fetch all,
+            // if not true then fetch by status
+            if(fullRequested){
+                return (List<Item>) itemRepository.findAll();
+
+            }
+            else {
+                return itemRepository.findByItemStatus(status);
+            }
+
+        }
+        else {
             // Public user: only listed items, mapped to public DTO
             List<Item> listedItems = itemRepository.findByItemStatus(ItemStatus.LISTED);
 
             return listedItems.stream()
-                    .map(item -> new PublicItemDto(
-                            item.getItemName(),
-                            item.getItemDescription(),
-                            item.getFoundLocation(),
-                            item.getGivenLocation(),
-                            item.getImage(),
-                            item.getItemStatus(),
-                            item.getCreatedDate()
-                    ))
+                    .map(PublicItemMapper::mapToPublicItemDto)
                     .collect(Collectors.toList());
         }
     }
 
     @Override
-    public Object getItemById(Long id ,boolean full) {
+    public Object getItemById(Long id) {
         boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
                 !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        if (isAuthenticated && full) {
+        if (isAuthenticated) {
             // Admin: full access to all items
             return itemRepository.findItemById(id);
-        } else {
+        }
+        else {
             // Public user: only listed items, mapped to public DTO
             Item item = itemRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Item not found"));
 
-            PublicItemDto dto = new PublicItemDto(
-                    item.getItemName(),
-                    item.getItemDescription(),
-                    item.getFoundLocation(),
-                    item.getGivenLocation(),
-                    item.getImage(),
-                    item.getItemStatus(),
-                    item.getCreatedDate());
-            return dto;
+
+            return PublicItemMapper.mapToPublicItemDto(item);
         }
     }
-
 
     @Override
     public void updateItemStatus(Long itemId, UpdateItemStatusDto dto) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
 
-        // Get current authenticated username from SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 
@@ -162,6 +129,7 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.save(item);
     }
 
+    @Override
     public void deleteItem(Long itemId) {
         Item item = itemRepository.findById(itemId)
             .orElseThrow(() -> new RuntimeException("Item not found"));
@@ -172,6 +140,50 @@ public class ItemServiceImpl implements ItemService {
 
         itemRepository.delete(item);
     }
+
+    // Run every day at 5 AM (Asia/Baku timezone)
+    @Scheduled(cron = "0 0 5 * * *", zone = "Asia/Baku")
+    public void archiveAndDeleteItems() {
+        log.info("Starting scheduled archive & delete task...");
+
+        Date threeMonthsAgo = Date.from(LocalDate.now()
+                .minusMonths(3)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
+
+        Date twelveMonthsAgo = Date.from(LocalDate.now()
+                .minusMonths(12)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
+
+        //Archive items older than 3 months (but not already archived or deleted)
+        List<Item> toArchive = itemRepository.findByCreatedDateBeforeAndItemStatusNot(threeMonthsAgo, ItemStatus.ARCHIVED);
+        toArchive.forEach(item -> item.setItemStatus(ItemStatus.ARCHIVED));
+        itemRepository.saveAll(toArchive);
+        log.info("Archived {} items", toArchive.size());
+
+        //Delete items older than 12 months
+        List<Item> toDelete = itemRepository.findByCreatedDateBefore(twelveMonthsAgo);
+        itemRepository.deleteAll(toDelete);
+        log.info("Deleted {} items", toDelete.size());
+
+        log.info("Finished scheduled archive & delete task.");
+    }
+
+    public boolean isAuthenticatedAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails userDetails) {
+            return userRepository.findByUsername(userDetails.getUsername()).isPresent();
+        }
+
+        return false;
+    }
+
 
 
 }

@@ -20,7 +20,7 @@ import usg.lostlink.server.service.implementation.OfficeService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/offices")
+@RequestMapping("/offices")
 public class OfficeController {
 
   private final OfficeService officeService;
@@ -31,6 +31,12 @@ public class OfficeController {
     return ResponseEntity.ok(ApiResponse.success(offices, "Offices retrieved", HttpStatus.OK));
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<ApiResponse<Office>> getById(@PathVariable Long id) {
+    Office office = officeService.getOfficeById(id);
+    return ResponseEntity.ok(ApiResponse.success(office, "Office retrieved", HttpStatus.OK));
+  }
+
   @PostMapping
   public ResponseEntity<ApiResponse<Office>> create(@RequestBody OfficeDto dto) {
     Office created = officeService.create(dto);
@@ -38,7 +44,6 @@ public class OfficeController {
   }
 
   @PatchMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<ApiResponse<Office>> update(@PathVariable Long id,
                                                     @RequestBody OfficeDto dto) {
     Office updated = officeService.update(id, dto);
@@ -46,7 +51,6 @@ public class OfficeController {
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
     officeService.delete(id);
     return ResponseEntity.ok(ApiResponse.success(null, "Office deleted", HttpStatus.OK));

@@ -13,7 +13,7 @@ import usg.lostlink.server.service.implementation.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 

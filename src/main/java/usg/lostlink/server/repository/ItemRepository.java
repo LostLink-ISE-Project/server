@@ -8,6 +8,7 @@ import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.enums.ItemStatus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -17,4 +18,8 @@ public interface ItemRepository extends CrudRepository<Item,Long> {
     List<Item> findByItemStatus(ItemStatus status);
 
     Item findItemById(Long id);
+
+    List<Item> findByCreatedDateBeforeAndItemStatusNot(Date threeMonthsAgo, ItemStatus itemStatus);
+
+    List<Item> findByCreatedDateBefore(Date twelveMonthsAgo);
 }

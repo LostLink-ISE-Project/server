@@ -11,7 +11,7 @@ import usg.lostlink.server.entity.User;
 import usg.lostlink.server.service.implementation.AuthService;
 
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

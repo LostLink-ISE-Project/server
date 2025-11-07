@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PublicItemDto {
+    private Long id;
     private String itemName;
     private String itemDescription;
     private String foundLocation;

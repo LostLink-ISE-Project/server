@@ -49,6 +49,12 @@ public class LocationService {
   }
 
   public void delete(Long id) {
+
     locationRepository.deleteById(id);
+  }
+
+  public Location getLocationByID(Long id) {
+    return locationRepository.findById(id).
+            orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
   }
 }

@@ -8,7 +8,7 @@ import usg.lostlink.server.service.implementation.ReportService;
 
 
 @RestController
-@RequestMapping("/v1/report")
+@RequestMapping("/report")
 @RequiredArgsConstructor
 public class ReportController {
 

@@ -13,11 +13,5 @@ import java.util.Date;
 @AllArgsConstructor
 public class AuditData {
 
-    private Date createdDate;
 
-    private Date updatedDate;
-
-    private User createdBy;
-
-    private User updatedBy;
 }
