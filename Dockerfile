@@ -5,6 +5,8 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy Gradle wrapper and necessary files
+ENV GRADLE_USER_HOME=/home/gradle/.gradle
+
 COPY gradlew .
 COPY gradle gradle
 

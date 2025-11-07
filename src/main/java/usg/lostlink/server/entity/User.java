@@ -7,13 +7,19 @@ import usg.lostlink.server.enums.UserStatus;
 import java.util.*;
 
 
+
+@Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 public class User{
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String profilePhoto;
 
@@ -21,14 +27,15 @@ public class User{
 
     private String surname;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
 
     private UserStatus status;
-    // User classi Auditi extend ede bilmez cunki Auditin fieldlerinde User subclassi istifade olunur.
-    // Onun yerine 2 dene date fieldini Auditden bura elave edirem.
+
     private Date createdDate;
 
     private Date updatedDate;
+
 }
