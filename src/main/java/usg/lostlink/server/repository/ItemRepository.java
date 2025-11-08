@@ -1,6 +1,8 @@
 package usg.lostlink.server.repository;
 
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import usg.lostlink.server.dto.ItemDto;
@@ -24,5 +26,6 @@ public interface ItemRepository extends CrudRepository<Item,Long> {
     List<Item> findByCreatedDateBefore(java.util.Date twelveMonthsAgo);
 
     Long countByCreatedDateBetween(Date from, Date to);
+
 }
 

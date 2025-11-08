@@ -40,7 +40,8 @@ public class ItemServiceImpl implements ItemService {
                         itemDto.getItemDescription(),
                         itemDto.getFoundLocation(),
                         itemDto.getSubmitterEmail(),
-                        itemDto.getGivenLocation());
+                        itemDto.getGivenLocation(),
+                        itemDto.getCategory());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/locations/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/report").authenticated()
+                        .requestMatchers("/categories/**").authenticated()
                         .requestMatchers("/swagger").permitAll()
                         .requestMatchers("/swagger-ui/index.html").permitAll()
                     .anyRequest().authenticated()

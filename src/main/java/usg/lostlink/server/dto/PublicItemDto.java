@@ -20,4 +20,5 @@ public class PublicItemDto {
     private String image;
     private ItemStatus status;
     private Date createdDate;
+    private String category;
 }

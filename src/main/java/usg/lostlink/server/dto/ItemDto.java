@@ -15,6 +15,7 @@ public class ItemDto {
     private String submitterEmail;
     private String image;
     private String givenLocation;
+    private String category;
 
     public ItemDto(String itemName,
                    String itemDescription,

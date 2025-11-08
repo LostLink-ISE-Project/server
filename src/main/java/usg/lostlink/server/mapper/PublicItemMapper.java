@@ -15,7 +15,8 @@ public class PublicItemMapper {
                 item.getGivenLocation(),
                 item.getImage(),
                 item.getItemStatus(),
-                item.getCreatedDate()
+                item.getCreatedDate(),
+                item.getCategory()
         );
     }
 
