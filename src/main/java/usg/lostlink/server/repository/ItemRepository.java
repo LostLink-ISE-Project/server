@@ -21,5 +21,8 @@ public interface ItemRepository extends CrudRepository<Item,Long> {
 
     List<Item> findByCreatedDateBeforeAndItemStatusNot(Date threeMonthsAgo, ItemStatus itemStatus);
 
-    List<Item> findByCreatedDateBefore(Date twelveMonthsAgo);
+    List<Item> findByCreatedDateBefore(java.util.Date twelveMonthsAgo);
+
+    Long countByCreatedDateBetween(Date from, Date to);
 }
+

@@ -17,14 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
 
-
     private final ItemService itemService;
 
-
-
     @PostMapping()
-    public ApiResponse<Object> createItem(@RequestBody ItemDto itemDto) {
-        return itemService.createItem(itemDto);
+    public ResponseEntity<ApiResponse<Object>>  createItem(@RequestBody ItemDto itemDto) {
+        itemService.createItem(itemDto);
+        return ResponseEntity.ok(ApiResponse.success(null,"Item has been created, and status is set to SUBMITTED.", HttpStatus.CREATED));
     }
 
     @GetMapping()

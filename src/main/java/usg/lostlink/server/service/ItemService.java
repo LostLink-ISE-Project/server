@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 public interface ItemService {
-    ApiResponse<Object> createItem(ItemDto itemDto);
+    void createItem(ItemDto itemDto);
     public boolean isAuthenticatedAdmin();
 
     List<?> getItems(boolean fullRequested, ItemStatus status);

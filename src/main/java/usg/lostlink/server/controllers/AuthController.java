@@ -1,6 +1,7 @@
 package usg.lostlink.server.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.LoginDto;
@@ -8,6 +9,7 @@ import usg.lostlink.server.dto.ResetPasswordDto;
 import usg.lostlink.server.dto.UpdateCurrentUserDto;
 import usg.lostlink.server.dto.UpdateUserDto;
 import usg.lostlink.server.entity.User;
+import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.implementation.AuthService;
 
 @RestController
@@ -17,27 +19,36 @@ public class AuthController {
 
 
     private final AuthService authService;
-    //public user can access
+    // Public: login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDto loginDto) {
         String jwtToken = authService.login(loginDto);
-        return ResponseEntity.ok().body(jwtToken);
+        return ResponseEntity.ok(
+                ApiResponse.success(jwtToken, "Login successful", HttpStatus.OK)
+        );
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser() {
-        return ResponseEntity.ok(authService.getCurrentUser());
+    public ResponseEntity<ApiResponse<User>> getCurrentUser() {
+        User user = authService.getCurrentUser();
+        return ResponseEntity.ok(
+                ApiResponse.success(user, "User data retrieved", HttpStatus.OK)
+        );
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<User> updateCurrentUser(@RequestBody UpdateCurrentUserDto updateUserDto) {
+    public ResponseEntity<ApiResponse<User>> updateCurrentUser(@RequestBody UpdateCurrentUserDto updateUserDto) {
         User updatedUser = authService.updateCurrentUser(updateUserDto);
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(
+                ApiResponse.success(updatedUser, "User profile updated", HttpStatus.OK)
+        );
     }
 
     @PostMapping("/me/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetDto) {
+    public ResponseEntity<ApiResponse<Object>> resetPassword(@RequestBody ResetPasswordDto resetDto) {
         authService.resetPassword(resetDto);
-        return ResponseEntity.ok("Password successfully updated.");
+        return ResponseEntity.ok(
+                ApiResponse.success(null, "Password successfully updated", HttpStatus.OK)
+        );
     }
 }

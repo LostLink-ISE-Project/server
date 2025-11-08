@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public ApiResponse<Object> createItem(ItemDto itemDto) {
+    public void createItem(ItemDto itemDto) {
         Item item = Item.of( itemDto.getImage(),
                         itemDto.getItemName(),
                         itemDto.getItemDescription(),
@@ -54,16 +54,13 @@ public class ItemServiceImpl implements ItemService {
                         item.setUpdatedBy(u.getUsername());
                         item.setItemStatus(ItemStatus.LISTED);
             });
-            return ApiResponse.success(null,"Item has been created, and status is set to SUBMITTED.", HttpStatus.CREATED);
         }
         else{
             item.setCreatedBy("system");
             item.setUpdatedBy("system");
             item.setItemStatus(ItemStatus.SUBMITTED);
         }
-
         itemRepository.save(item);
-        return ApiResponse.success(null,"Item has been created.", HttpStatus.CREATED);
     }
 
     @Override
