@@ -3,6 +3,7 @@ package usg.lostlink.server.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.CategoryDto;
+import usg.lostlink.server.dto.CreateCategoryDto;
 import usg.lostlink.server.entity.Category;
 import usg.lostlink.server.repository.CategoryRepository;
 import usg.lostlink.server.service.CategoryService;
@@ -17,8 +18,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void createCategory(CategoryDto dto) {
-        Category category = new Category(dto.getId(), dto.getName());
+    public void createCategory(CreateCategoryDto dto) {
+        Category category = new Category();
+        category.setName(dto.getName());
         categoryRepository.save(category);
     }
 
@@ -31,9 +33,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Long id, CategoryDto dto) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+    public void updateCategory(CategoryDto dto) {
+        Category category = categoryRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Category not found with this id"));
 
         category.setName(dto.getName());
         categoryRepository.save(category);

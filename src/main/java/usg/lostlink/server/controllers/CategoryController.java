@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.CategoryDto;
+import usg.lostlink.server.dto.CreateCategoryDto;
 import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.CategoryService;
 
@@ -18,7 +19,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createCategory(@RequestBody CategoryDto dto) {
+    public ResponseEntity<ApiResponse<Object>> createCategory(@RequestBody CreateCategoryDto dto) {
         categoryService.createCategory(dto);
         return ResponseEntity.ok(ApiResponse.success(null, "Category created.", HttpStatus.CREATED));
     }
@@ -29,9 +30,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateCategory(@PathVariable Long id,
-                                                              @RequestBody CategoryDto dto) {
-        categoryService.updateCategory(id, dto);
+    public ResponseEntity<ApiResponse<Object>> updateCategory( @RequestBody CategoryDto dto) {
+        categoryService.updateCategory(dto);
         return ResponseEntity.ok(ApiResponse.success(null, "Category updated.", HttpStatus.OK));
     }
 

@@ -1,30 +1,9 @@
-# Use JDK 17 as the base image
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 
-# Set the working directory inside the container
-WORKDIR /app
+WORKDIR /server
 
-# Copy Gradle wrapper and necessary files
-ENV GRADLE_USER_HOME=/home/gradle/.gradle
+COPY build/libs/lost-link-server-0.0.1-SNAPSHOT.jar lostlink.jar
 
-COPY gradlew .
-COPY gradle gradle
-
-# Copy build files
-COPY build.gradle .
-COPY settings.gradle .
-
-# Copy the source code
-COPY src src
-
-# Grant execute permission to gradlew
-RUN chmod +x gradlew
-
-# Build the app
-RUN ./gradlew build -x test
-
-# Expose the application port
 EXPOSE 8081
 
-# Run the application
-CMD ["java", "-jar", "build/libs/lost-link-server-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "lostlink.jar"]
