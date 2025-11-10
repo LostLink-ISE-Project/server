@@ -36,7 +36,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/auth/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/items").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/{id}").permitAll()
@@ -50,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/locations/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/report").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                         .requestMatchers("/categories/**").authenticated()
                         .requestMatchers(
                             "/swagger-ui/**",
