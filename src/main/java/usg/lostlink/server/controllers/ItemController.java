@@ -6,40 +6,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usg.lostlink.server.dto.ItemDto;
 import usg.lostlink.server.dto.UpdateItemStatusDto;
+import usg.lostlink.server.enums.ItemStatus;
 import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.ItemService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/items")
+@RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
 
-
     private final ItemService itemService;
 
-
-
     @PostMapping()
-    public ApiResponse<Object> createItem(@RequestBody ItemDto itemDto) {
-        return itemService.createItem(itemDto);
+    public ResponseEntity<ApiResponse<Object>>  createItem(@RequestBody ItemDto itemDto) {
+        itemService.createItem(itemDto);
+        return ResponseEntity.ok(ApiResponse.success(null,"Item has been created, and status is set to SUBMITTED.", HttpStatus.CREATED));
     }
 
     @GetMapping()
-    public ResponseEntity<List<?>> getItems(@RequestParam(defaultValue = "false") boolean full) {
-        return ResponseEntity.ok(itemService.getItems(full));
+    public ResponseEntity<ApiResponse<List<?>>> getItems(@RequestParam(defaultValue = "false") boolean full,
+                                            @RequestParam(defaultValue = "LISTED") ItemStatus status) {
+        return ResponseEntity.ok(ApiResponse.success(itemService.getItems(full,status),"Items retrieved.",HttpStatus.OK));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getItemById(@PathVariable Long id, @RequestParam(defaultValue = "false") boolean full) {
-        return ResponseEntity.ok(itemService.getItemById(id,full));
+    public ResponseEntity<ApiResponse<?>> getItemById(@PathVariable Long id ) {
+        return ResponseEntity.ok(ApiResponse.success(itemService.getItemById(id), "Item retrieved.", HttpStatus.OK));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateItemStatus(
-            @PathVariable Long id,
-            @RequestBody UpdateItemStatusDto dto) {
+    public ResponseEntity<ApiResponse<Object>> updateItemStatus(@PathVariable Long id,
+                                                                @RequestBody UpdateItemStatusDto dto) {
         itemService.updateItemStatus(id, dto);
         return ResponseEntity.ok(ApiResponse.success(null, "Item's status updated.", HttpStatus.OK));
     }

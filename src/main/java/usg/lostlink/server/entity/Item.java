@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import usg.lostlink.server.enums.ItemStatus;
-
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,12 +46,15 @@ public class Item {
     //User.username
     private String updatedBy;
 
+    private String category;
+
     public static Item of(String image,
                           String itemName,
                           String itemDescription,
                           String foundLocation,
                           String submitterEmail,
-                          String givenLocation) {
+                          String givenLocation,
+                          String category) {
         Item item = new Item();
         item.setImage(image);
         item.setItemName(itemName);
@@ -60,6 +62,7 @@ public class Item {
         item.setFoundLocation(foundLocation);
         item.setSubmitterEmail(submitterEmail);
         item.setGivenLocation(givenLocation);
+        item.setCategory(category);
         item.setCreatedDate(new Date());
         item.setUpdatedDate(new Date());
 

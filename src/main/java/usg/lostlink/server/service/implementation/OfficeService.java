@@ -3,6 +3,7 @@ package usg.lostlink.server.service.implementation;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,5 +59,11 @@ public class OfficeService {
   public void delete(Long id) {
     officeRepository.deleteById(id);
   }
+
+  public Office getOfficeById(Long id) {
+    return officeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Office not found with id: " + id));
+  }
+
 
 }

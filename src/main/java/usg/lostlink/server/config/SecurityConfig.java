@@ -10,6 +10,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,24 +30,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/auth/login").permitAll()
-                        .requestMatchers("/v1/auth/me","/v1/report").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/v1/items").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/items").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/items/{id}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/v1/items/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/v1/offices").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/offices").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/v1/offices/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/v1/offices/**").authenticated()
-                        .requestMatchers("/v1/users/**").authenticated()
-                    .anyRequest().authenticated()
-                )
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Add this line
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers("/auth/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/items").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/items/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/items").permitAll()
+                        .requestMatchers("/items/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/offices").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/offices/{id}").permitAll()
+                        .requestMatchers("/offices/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/locations").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/locations/{id}").permitAll()
+                        .requestMatchers("/locations/**").authenticated()
+                        .requestMatchers("/users/**").authenticated()
+                        .requestMatchers("/report").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/categories").permitAll()
+                        .requestMatchers("/categories/**").authenticated()
+                        .requestMatchers(
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui.html",
+                            "/webjars/**").permitAll())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .build();
     }
 

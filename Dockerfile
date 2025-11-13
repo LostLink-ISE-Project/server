@@ -1,30 +1,12 @@
-# Use JDK 17 as the base image
-FROM openjdk:17-jdk-slim
-
-# Set the working directory inside the container
+# Stage 1: Build only bootJar
+FROM gradle:8.5.0-jdk17 AS build
 WORKDIR /app
+COPY . .
+RUN ./gradlew bootJar
 
-# Copy Gradle wrapper and necessary files
-ENV GRADLE_USER_HOME=/home/gradle/.gradle
-
-COPY gradlew .
-COPY gradle gradle
-
-# Copy build files
-COPY build.gradle .
-COPY settings.gradle .
-
-# Copy the source code
-COPY src src
-
-# Grant execute permission to gradlew
-RUN chmod +x gradlew
-
-# Build the app
-RUN ./gradlew build -x test
-
-# Expose the application port
-EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "build/libs/lost-link-server-0.0.1-SNAPSHOT.jar"]
+# Stage 2: Run jar
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]

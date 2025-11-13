@@ -3,7 +3,7 @@ version: '3.8'
 services:
   database:
     image: postgres:16
-    container_name: lostlink-database
+    container_name: lostlink-db
     restart: always
     environment:
       POSTGRES_USER: postgres

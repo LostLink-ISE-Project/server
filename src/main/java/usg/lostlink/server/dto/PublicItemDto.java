@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PublicItemDto {
+    private Long id;
     private String itemName;
     private String itemDescription;
     private String foundLocation;
@@ -19,4 +20,5 @@ public class PublicItemDto {
     private String image;
     private ItemStatus status;
     private Date createdDate;
+    private String category;
 }
