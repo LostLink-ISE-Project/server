@@ -15,7 +15,7 @@ public class CorsConfig {
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
             .allowedOrigins("http://localhost:5173",
-                "http://127.0.0.1:3000",
+                "http://localhost:5500",
                 "https://lostlink-form.usg.az/",
                 "https://lostlink.usg.az/",
                 "https://lostlink-form-dev.usg.az/",

@@ -26,6 +26,9 @@ public class SwaggerConfig {
                     .name(securitySchemeName)
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
-                    .bearerFormat("JWT")));
+                    .bearerFormat("JWT")))
+        .servers(new ArrayList<>(Arrays.asList(
+            new Server().url("https://lostlink-api.usg.az"),
+            new Server().url("https://lostlink-api-dev.usg.az"))));
   }
 }
