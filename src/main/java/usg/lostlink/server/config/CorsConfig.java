@@ -20,7 +20,9 @@ public class CorsConfig {
                 "https://lostlink-form.usg.az/",
                 "https://lostlink.usg.az/",
                 "https://lostlink-form-dev.usg.az/",
-                "https://lostlink-dev.usg.az/")
+                "https://lostlink-dev.usg.az/",
+                "https://lostlink-api.usg.az/api/v1/swagger-ui/index.html",
+                    "https://lostlink-api-dev.usg.az/api/v1/swagger-ui/index.html")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
             .allowedHeaders("Authorization", "Content-Type", "X-Requested-With", "Accept")
             .exposedHeaders("Authorization")
