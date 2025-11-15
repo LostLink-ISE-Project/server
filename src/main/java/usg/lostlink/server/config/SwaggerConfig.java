@@ -1,10 +1,13 @@
 package usg.lostlink.server.config;
 
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,9 +29,6 @@ public class SwaggerConfig {
                     .name(securitySchemeName)
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
-                    .bearerFormat("JWT")))
-        .servers(new ArrayList<>(Arrays.asList(
-            new Server().url("https://lostlink-api.usg.az"),
-            new Server().url("https://lostlink-api-dev.usg.az"))));
+                    .bearerFormat("JWT")));
   }
 }
