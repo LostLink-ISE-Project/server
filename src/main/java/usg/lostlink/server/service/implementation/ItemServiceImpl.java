@@ -11,12 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import usg.lostlink.server.dto.*;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
 import usg.lostlink.server.mapper.PublicItemMapper;
 import usg.lostlink.server.repository.ItemRepository;
+import usg.lostlink.server.repository.MediaRepository;
 import usg.lostlink.server.repository.UserRepository;
 import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.ItemService;
@@ -32,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final MediaRepository mediaRepository;
 
     @Override
     public void createItem(ItemDto itemDto) {
@@ -128,6 +131,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public void deleteItem(Long itemId) {
         Item item = itemRepository.findById(itemId)
             .orElseThrow(() -> new RuntimeException("Item not found"));
@@ -135,6 +139,8 @@ public class ItemServiceImpl implements ItemService {
         if (item.getItemStatus() != ItemStatus.SUBMITTED) {
             throw new IllegalStateException("Only items with status SUBMITTED can be deleted.");
         }
+
+        mediaRepository.deleteById(item.getImage());
 
         itemRepository.delete(item);
     }

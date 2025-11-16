@@ -22,7 +22,8 @@ public class ItemDto {
                    String foundLocation,
                    String submitterEmail,
                    String image,
-                   String givenLocation) {
+                   String givenLocation,
+                   String category) {
 
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -30,6 +31,7 @@ public class ItemDto {
         this.submitterEmail = submitterEmail;
         this.image = image;
         this.givenLocation = givenLocation;
+        this.category = category;
     }
 
 }

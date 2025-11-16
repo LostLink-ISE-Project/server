@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/locations/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/report").authenticated()
+                        .requestMatchers("/media").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                         .requestMatchers("/categories/**").authenticated()
                         .requestMatchers(
