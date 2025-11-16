@@ -1,6 +1,7 @@
 package usg.lostlink.server.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,11 @@ public class MediaController {
   }
 
   @GetMapping()
-  public Media getMedia(@RequestParam("id") String id) {
-    return mediaService.getMedia(id);
+  public ResponseEntity<byte[]> getMedia(@RequestParam("id") String id) {
+    Media media = mediaService.getMedia(id);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType(media.getMimeType())); // e.g., image/jpeg
+    return new ResponseEntity<>(media.getData(), headers, HttpStatus.OK);
   }
 }
