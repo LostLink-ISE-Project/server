@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +30,8 @@ public class MediaController {
 
   }
 
-  @GetMapping()
-  public ResponseEntity<byte[]> getMedia(@RequestParam("id") String id) {
+  @GetMapping("/{id}")
+  public ResponseEntity<byte[]> getMedia(@PathVariable String id) {
     Media media = mediaService.getMedia(id);
 
     HttpHeaders headers = new HttpHeaders();
