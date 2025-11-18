@@ -43,11 +43,17 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public void disableUser(Long id) {
+  public void changeUserStatus(Long id) {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("User not found"));
 
-    user.setStatus(UserStatus.DISABLED);
+    if (user.getStatus() == UserStatus.ACTIVE) {
+      user.setStatus(UserStatus.DISABLED);
+    }
+    else {
+      user.setStatus(UserStatus.ACTIVE);
+    }
+
     user.setUpdatedDate(new Date());
     userRepository.save(user);
   }

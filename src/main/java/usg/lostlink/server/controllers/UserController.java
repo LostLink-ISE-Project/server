@@ -38,9 +38,9 @@ public class UserController {
     return ResponseEntity.ok(ApiResponse.success(updated, "User updated", HttpStatus.OK));
   }
 
-  @PatchMapping("/disable/{id}")
-  public ResponseEntity<ApiResponse<Object>> disableUser(@PathVariable Long id) {
-    userService.disableUser(id);
+  @PatchMapping("/status/{id}")
+  public ResponseEntity<ApiResponse<Object>> changeUserStatus(@PathVariable Long id) {
+    userService.changeUserStatus(id);
     return ResponseEntity.ok(ApiResponse.success(null, "User disabled", HttpStatus.OK));
   }
 }
