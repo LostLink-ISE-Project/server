@@ -1,31 +1,29 @@
 package usg.lostlink.server.repository;
 
-import org.springframework.data.jdbc.repository.query.Query;
+import java.util.Date;
+import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import usg.lostlink.server.dto.ItemDto;
 import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.enums.ItemStatus;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Repository
-public interface ItemRepository extends CrudRepository<Item,Long> {
-    long countByItemStatus(ItemStatus status);
+public interface ItemRepository extends CrudRepository<Item, Long> {
+  long countByItemStatus(ItemStatus status);
 
-    List<Item> findByItemStatus(ItemStatus status);
+  //List<Item> findByItemStatus(ItemStatus status);
+  List<Item> findByItemStatus(ItemStatus status, Sort sort);
 
-    Item findItemById(Long id);
+  List<Item> findAll(Sort sort);
 
-    List<Item> findByCreatedDateBeforeAndItemStatusNot(Date threeMonthsAgo, ItemStatus itemStatus);
+  Item findItemById(Long id);
 
-    List<Item> findByCreatedDateBefore(java.util.Date twelveMonthsAgo);
+  List<Item> findByCreatedDateBeforeAndItemStatusNot(Date threeMonthsAgo, ItemStatus itemStatus);
 
-    Long countByCreatedDateBetween(Date from, Date to);
+  List<Item> findByCreatedDateBefore(java.util.Date twelveMonthsAgo);
+
+  Long countByCreatedDateBetween(Date from, Date to);
 
 }
 
