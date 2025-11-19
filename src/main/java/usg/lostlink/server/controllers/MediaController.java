@@ -26,6 +26,25 @@ public class MediaController {
 
   private final MediaService mediaService;
 
+  private static String sha256Hex(byte[] data) {
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      md.update(data);
+      return HexFormat.of().formatHex(md.digest());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  //  @GetMapping("/{id}")
+  //  public ResponseEntity<byte[]> getMedia(@PathVariable String id) {
+  //    Media media = mediaService.getMedia(id);
+  //
+  //    HttpHeaders headers = new HttpHeaders();
+  //    headers.setContentType(MediaType.parseMediaType(media.getMimeType())); // e.g., image/jpeg
+  //    return new ResponseEntity<>(media.getData(), headers, HttpStatus.OK);
+  //  }
+
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<ApiResponse<String>> createImage(
       @RequestParam("media") MultipartFile media) {
@@ -33,15 +52,6 @@ public class MediaController {
     return ResponseEntity.ok(ApiResponse.success(id, "Media was created", HttpStatus.CREATED));
 
   }
-
-//  @GetMapping("/{id}")
-//  public ResponseEntity<byte[]> getMedia(@PathVariable String id) {
-//    Media media = mediaService.getMedia(id);
-//
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setContentType(MediaType.parseMediaType(media.getMimeType())); // e.g., image/jpeg
-//    return new ResponseEntity<>(media.getData(), headers, HttpStatus.OK);
-//  }
 
   @GetMapping("/{id}")
   public ResponseEntity<byte[]> getMedia(@PathVariable String id, WebRequest request) {
@@ -64,16 +74,6 @@ public class MediaController {
         .eTag(etag)
         .contentType(MediaType.parseMediaType(mime))
         .body(bytes);
-  }
-
-  private static String sha256Hex(byte[] data) {
-    try {
-      MessageDigest md = MessageDigest.getInstance("SHA-256");
-      md.update(data);
-      return HexFormat.of().formatHex(md.digest());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
 }

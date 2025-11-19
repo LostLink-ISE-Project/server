@@ -49,8 +49,7 @@ public class UserService {
 
     if (user.getStatus() == UserStatus.ACTIVE) {
       user.setStatus(UserStatus.DISABLED);
-    }
-    else {
+    } else {
       user.setStatus(UserStatus.ACTIVE);
     }
 

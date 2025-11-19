@@ -14,7 +14,6 @@ public class MediaService {
   private final MediaRepository mediaRepository;
 
   public String saveImage(MultipartFile media) {
-
     Media image = new Media();
     try {
       image.setData(media.getBytes());

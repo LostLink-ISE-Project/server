@@ -10,6 +10,7 @@ import usg.lostlink.server.enums.ItemStatus;
 
 @Repository
 public interface ItemRepository extends CrudRepository<Item, Long> {
+
   long countByItemStatus(ItemStatus status);
 
   //List<Item> findByItemStatus(ItemStatus status);

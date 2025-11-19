@@ -5,5 +5,6 @@ import usg.lostlink.server.enums.ItemStatus;
 
 @Data
 public class UpdateItemDto {
-    private ItemStatus status;
+
+  private ItemStatus status;
 }

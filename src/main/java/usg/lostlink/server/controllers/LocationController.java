@@ -1,16 +1,21 @@
 package usg.lostlink.server.controllers;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import usg.lostlink.server.dto.LocationDto;
 import usg.lostlink.server.entity.Location;
 import usg.lostlink.server.response.ApiResponse;
 import usg.lostlink.server.service.implementation.LocationService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/locations")
@@ -21,7 +26,8 @@ public class LocationController {
 
   @GetMapping
   public ResponseEntity<ApiResponse<List<Location>>> getAll() {
-    return ResponseEntity.ok(ApiResponse.success(locationService.getAll(), "Locations retrieved", HttpStatus.OK));
+    return ResponseEntity.ok(
+        ApiResponse.success(locationService.getAll(), "Locations retrieved", HttpStatus.OK));
   }
 
   @GetMapping("/{id}")
@@ -37,7 +43,8 @@ public class LocationController {
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<ApiResponse<Location>> update(@PathVariable Long id, @RequestBody LocationDto dto) {
+  public ResponseEntity<ApiResponse<Location>> update(@PathVariable Long id,
+                                                      @RequestBody LocationDto dto) {
     Location updated = locationService.update(id, dto);
     return ResponseEntity.ok(ApiResponse.success(updated, "Location updated", HttpStatus.OK));
   }

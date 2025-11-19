@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GeneralReportDto {
-    private long totalSubmissions;
-    private long foundItems;
-    private long claimedItems;
-    private long archivedItems;
+
+  private long totalSubmissions;
+  private long foundItems;
+  private long claimedItems;
+  private long archivedItems;
 }

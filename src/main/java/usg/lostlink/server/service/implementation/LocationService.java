@@ -1,14 +1,13 @@
 package usg.lostlink.server.service.implementation;
 
+import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.LocationDto;
 import usg.lostlink.server.entity.Location;
 import usg.lostlink.server.repository.LocationRepository;
-
-import java.util.Date;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,12 +48,11 @@ public class LocationService {
   }
 
   public void delete(Long id) {
-
     locationRepository.deleteById(id);
   }
 
   public Location getLocationByID(Long id) {
-    return locationRepository.findById(id).
-            orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
+    return locationRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
   }
 }

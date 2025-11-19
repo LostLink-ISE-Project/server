@@ -1,25 +1,24 @@
 package usg.lostlink.server.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.ItemDto;
 import usg.lostlink.server.dto.UpdateItemStatusDto;
-import usg.lostlink.server.entity.Item;
 import usg.lostlink.server.enums.ItemStatus;
-import usg.lostlink.server.response.ApiResponse;
-
-import java.util.List;
 
 @Service
 public interface ItemService {
-    void createItem(ItemDto itemDto);
-    public boolean isAuthenticatedAdmin();
 
-    List<?> getItems(boolean fullRequested, ItemStatus status);
+  void createItem(ItemDto itemDto);
 
-    public Object getItemById(Long id);
+  boolean isAuthenticatedAdmin();
 
-    void updateItemStatus(Long itemId, UpdateItemStatusDto dto);
+  List<?> getItems(boolean fullRequested, ItemStatus status);
 
-    public void deleteItem(Long itemId);
+  Object getItemById(Long id);
+
+  void updateItemStatus(Long itemId, UpdateItemStatusDto dto);
+
+  void deleteItem(Long itemId);
 }
 

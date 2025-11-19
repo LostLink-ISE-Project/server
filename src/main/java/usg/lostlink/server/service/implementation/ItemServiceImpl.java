@@ -48,7 +48,6 @@ public class ItemServiceImpl implements ItemService {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (isAuthenticatedAdmin()) {
-
       String username = ((UserDetails) authentication.getPrincipal()).getUsername();
       Optional<User> user = userRepository.findByUsername(username);
 
@@ -67,10 +66,10 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   public List<?> getItems(boolean fullRequested, ItemStatus status) {
-    boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
-        SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
-        !"anonymousUser".equals(
-            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null
+        && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+        && !"anonymousUser".equals(
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
     if (isAuthenticated) {
       // Admin: full access to all items. if full = true then fetch all,
@@ -96,10 +95,10 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   public Object getItemById(Long id) {
-    boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null &&
-        SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
-        !"anonymousUser".equals(
-            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null
+        && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+        && !"anonymousUser".equals(
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
     if (isAuthenticated) {
       // Admin: full access to all items
@@ -108,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
       // Public user: only listed items, mapped to public DTO
       Item item = itemRepository.findById(id)
           .orElseThrow(() -> new RuntimeException("Item not found"));
-
 
       return PublicItemMapper.mapToPublicItemDto(item);
     }
@@ -149,12 +147,12 @@ public class ItemServiceImpl implements ItemService {
   public void archiveAndDeleteItems() {
     log.info("Starting scheduled archive & delete task...");
 
-    Date threeMonthsAgo = Date.from(LocalDate.now()
+    final Date threeMonthsAgo = Date.from(LocalDate.now()
         .minusMonths(3)
         .atStartOfDay(ZoneId.systemDefault())
         .toInstant());
 
-    Date twelveMonthsAgo = Date.from(LocalDate.now()
+    final Date twelveMonthsAgo = Date.from(LocalDate.now()
         .minusMonths(12)
         .atStartOfDay(ZoneId.systemDefault())
         .toInstant());
@@ -187,6 +185,5 @@ public class ItemServiceImpl implements ItemService {
 
     return false;
   }
-
 
 }

@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class LostLinkServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LostLinkServerApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(LostLinkServerApplication.class, args);
+  }
 
 }

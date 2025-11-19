@@ -20,21 +20,21 @@ import lombok.Setter;
 @Entity
 public class Location {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String slug;
+  private String slug;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-    private Date createdDate;
+  private Date createdDate;
 
-    private Date updatedDate;
+  private Date updatedDate;
 
-    private String createdBy;
+  private String createdBy;
 
-    private String updatedBy;
+  private String updatedBy;
 }

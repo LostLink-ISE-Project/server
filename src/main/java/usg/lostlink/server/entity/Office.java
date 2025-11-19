@@ -17,23 +17,23 @@ import lombok.Setter;
 @Entity
 public class Office {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String location;
+  private String location;
 
-    private String workHours;
+  private String workHours;
 
-    private String contact;
+  private String contact;
 
-    private Date createdDate;
+  private Date createdDate;
 
-    private Date updatedDate;
+  private Date updatedDate;
 
-    private String createdBy;
+  private String createdBy;
 
-    private String updatedBy;
+  private String updatedBy;
 }

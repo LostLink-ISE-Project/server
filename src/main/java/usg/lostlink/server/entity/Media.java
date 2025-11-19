@@ -1,10 +1,13 @@
 package usg.lostlink.server.entity;
 
-import jakarta.persistence.*;
-import java.util.UUID;
-import lombok.*;
-
-import java.util.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -13,19 +16,19 @@ import java.util.Date;
 @Entity
 public class Media {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-    private byte[] data; // base64 format when sent to/from API
+  private byte[] data; // base64 format when sent to/from API
 
-    private String mimeType;
+  private String mimeType;
 
-    //private Date createdDate;
+  //private Date createdDate;
 
-    //private Date updatedDate;
+  //private Date updatedDate;
 
-    //private User createdBy;
+  //private User createdBy;
 
-    //private User updatedBy;
+  //private User updatedBy;
 }
