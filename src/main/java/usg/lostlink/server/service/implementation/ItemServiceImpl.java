@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
 
       } else {
-        return itemRepository.findByItemStatus(ItemStatus.LISTED,
+        return itemRepository.findByItemStatus(status,
             Sort.by(Sort.Direction.DESC, "createdDate"));
       }
 
