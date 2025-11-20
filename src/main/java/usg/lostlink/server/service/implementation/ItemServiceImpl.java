@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
 
     if (isAuthenticated) {
       // Admin: full access to all items
-      return itemRepository.findItemById(id);
+      return itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
     } else {
       // Public user: only listed items, mapped to public DTO
       Item item = itemRepository.findById(id)

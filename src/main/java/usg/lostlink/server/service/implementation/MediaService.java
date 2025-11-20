@@ -26,6 +26,6 @@ public class MediaService {
   }
 
   public Media getMedia(String id) {
-    return mediaRepository.findById(id).orElse(null);
+    return mediaRepository.findById(id).orElseThrow(() -> new RuntimeException("Media not found"));
   }
 }
