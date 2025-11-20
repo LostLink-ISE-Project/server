@@ -56,9 +56,9 @@ public class ItemController {
     return ResponseEntity.ok(ApiResponse.success(null, "Item's status updated.", HttpStatus.OK));
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<Object>> deleteItem(@PathVariable Long id) {
-    itemService.deleteItem(id);
+  @DeleteMapping()
+  public ResponseEntity<ApiResponse<Object>> deleteItem(@RequestBody List<Long> ids) {
+    itemService.deleteItem(ids);
     return ResponseEntity.ok(ApiResponse.success(null, "Item deleted", HttpStatus.NO_CONTENT));
   }
 
