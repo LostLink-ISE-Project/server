@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -129,17 +130,29 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   @Transactional
-  public void deleteItem(Long itemId) {
-    Item item = itemRepository.findById(itemId)
-        .orElseThrow(() -> new RuntimeException("Item not found"));
+  public void deleteItem(List<Long> itemIds) {
+    List<Item> items = (List<Item>) itemRepository.findAllById(itemIds);
 
-    if (item.getItemStatus() != ItemStatus.SUBMITTED) {
-      throw new IllegalStateException("Only items with status SUBMITTED can be deleted.");
+    if (items.size() != itemIds.size()) {
+      throw new RuntimeException("Some items were not found.");
     }
 
-    mediaRepository.deleteById(item.getImage());
+    for (Item item : items) {
+      if (item.getItemStatus() != ItemStatus.SUBMITTED) {
+        throw new IllegalStateException(
+            "Only items with status SUBMITTED can be deleted. Item ID: " + item.getId()
+        );
+      }
+    }
 
-    itemRepository.delete(item);
+    List<String> imageIds = items.stream()
+        .map(Item::getImage)
+        .filter(Objects::nonNull) // avoid nulls
+        .collect(Collectors.toList());
+
+    mediaRepository.deleteAllById(imageIds);
+
+    itemRepository.deleteAll(items);
   }
 
   // Run every day at 5 AM (Asia/Baku timezone)
