@@ -130,7 +130,7 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   @Transactional
-  public void deleteItem(List<Long> itemIds) {
+  public void deleteItems(List<Long> itemIds) {
     List<Item> items = (List<Item>) itemRepository.findAllById(itemIds);
 
     if (items.size() != itemIds.size()) {
@@ -153,6 +153,12 @@ public class ItemServiceImpl implements ItemService {
     mediaRepository.deleteAllById(imageIds);
 
     itemRepository.deleteAll(items);
+  }
+
+  @Override
+  @Transactional
+  public void deleteItem(Long id) {
+    deleteItems(List.of(id));
   }
 
   // Run every day at 5 AM (Asia/Baku timezone)
