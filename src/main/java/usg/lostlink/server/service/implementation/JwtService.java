@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
   private final Key key =
-      Keys.hmacShaKeyFor("super-secret-key-that-is-long-enough-to-be-secure".getBytes());
+      Keys.hmacShaKeyFor(
+          "nWrWSruKB97A1PmVTgjSauHnbuUtVT202rvsYl310kHe5jo59H1ZnV4ZU5sJL9UIo6KFfXMxqw8Ix6d4FqyRZ1n3VWmmpkW4ZhGp".getBytes());
 
   public String generateToken(String username) {
     return Jwts.builder()
