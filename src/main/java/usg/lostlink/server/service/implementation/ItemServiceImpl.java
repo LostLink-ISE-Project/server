@@ -16,14 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import usg.lostlink.server.dto.GivenLocationDto;
 import usg.lostlink.server.dto.ItemDto;
+import usg.lostlink.server.dto.PublicItemDto;
 import usg.lostlink.server.dto.UpdateItemStatusDto;
 import usg.lostlink.server.entity.Item;
+import usg.lostlink.server.entity.Office;
 import usg.lostlink.server.entity.User;
 import usg.lostlink.server.enums.ItemStatus;
-import usg.lostlink.server.mapper.PublicItemMapper;
 import usg.lostlink.server.repository.ItemRepository;
 import usg.lostlink.server.repository.MediaRepository;
+import usg.lostlink.server.repository.OfficeRepository;
 import usg.lostlink.server.repository.UserRepository;
 import usg.lostlink.server.service.ItemService;
 
@@ -35,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
   private final ItemRepository itemRepository;
   private final UserRepository userRepository;
   private final MediaRepository mediaRepository;
+  private final OfficeRepository officeRepository;
 
   @Override
   public void createItem(ItemDto itemDto) {
@@ -89,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
           Sort.by(Sort.Direction.DESC, "createdDate"));
 
       return listedItems.stream()
-          .map(PublicItemMapper::mapToPublicItemDto)
+          .map(this::mapToPublicItemDto)
           .collect(Collectors.toList());
     }
   }
@@ -109,8 +113,35 @@ public class ItemServiceImpl implements ItemService {
       Item item = itemRepository.findById(id)
           .orElseThrow(() -> new RuntimeException("Item not found"));
 
-      return PublicItemMapper.mapToPublicItemDto(item);
+      return mapToPublicItemDto(item);
     }
+  }
+
+  public PublicItemDto mapToPublicItemDto(Item item) {
+    String name = item.getGivenLocation();
+
+    Office office = officeRepository.findByName(name)
+        .orElseThrow(() -> new RuntimeException("Office not found with name: " + name));
+
+
+    GivenLocationDto givenLocationDto = new GivenLocationDto(
+        office.getName(),
+        office.getLocation(),
+        office.getWorkHours(),
+        office.getContact()
+    );
+
+    return new PublicItemDto(
+        item.getId(),
+        item.getItemName(),
+        item.getItemDescription(),
+        item.getFoundLocation(),
+        givenLocationDto,
+        item.getImage(),
+        item.getItemStatus(),
+        item.getCreatedDate(),
+        item.getCategory()
+    );
   }
 
   @Override

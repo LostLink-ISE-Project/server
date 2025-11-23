@@ -15,7 +15,7 @@ public class PublicItemDto {
   private String itemName;
   private String itemDescription;
   private String foundLocation;
-  private String givenLocation;
+  private GivenLocationDto givenLocation;
   private String image;
   private ItemStatus status;
   private Date createdDate;
