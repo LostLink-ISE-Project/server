@@ -145,12 +145,17 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
+  @Transactional
   public void updateItemStatus(Long itemId, UpdateItemStatusDto dto) {
     Item item = itemRepository.findById(itemId)
         .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+    if (dto.getStatus() == ItemStatus.CLAIMED) {
+      item.setItemDescription(dto.getDescription());
+    }
 
     item.setItemStatus(dto.getStatus());
     item.setUpdatedBy(username);

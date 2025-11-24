@@ -7,4 +7,5 @@ import usg.lostlink.server.enums.ItemStatus;
 public class UpdateItemStatusDto {
 
   private ItemStatus status;
+  private String description;
 }
