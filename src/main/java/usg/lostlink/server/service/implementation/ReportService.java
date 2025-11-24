@@ -5,6 +5,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import usg.lostlink.server.dto.GeneralReportDto;
+import usg.lostlink.server.dto.PublicReportDto;
 import usg.lostlink.server.enums.ItemStatus;
 import usg.lostlink.server.repository.ItemRepository;
 
@@ -45,6 +46,29 @@ public class ReportService {
     long archived = itemRepository.countByItemStatus(ItemStatus.ARCHIVED);
 
     return new GeneralReportDto(total, listed, claimed, archived);
+  }
+
+  // LISTED(created date) and CLAIMED(updated date)
+  public PublicReportDto getPublicReport(String period) {
+    Date from = null;
+    Date to = null;
+
+    if (period == null) {
+      from = java.sql.Date.valueOf(LocalDate.now());
+      to = java.sql.Date.valueOf(LocalDate.now().plusDays(1));
+    } else {
+      String[] parts = period.split("_");
+      from = java.sql.Date.valueOf(LocalDate.parse(parts[0]));
+      to = java.sql.Date.valueOf(LocalDate.parse(parts[1]));
+    }
+
+    Long foundItems =
+        itemRepository.countByItemStatusAndCreatedDateBetween(ItemStatus.LISTED, from, to);
+    Long claimedItems =
+        itemRepository.countByItemStatusAndUpdatedDateBetween(ItemStatus.CLAIMED, from, to);
+
+    return new PublicReportDto(foundItems, claimedItems);
+
   }
 
 }

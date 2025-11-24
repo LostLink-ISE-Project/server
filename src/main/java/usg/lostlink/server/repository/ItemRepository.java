@@ -26,5 +26,9 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
 
   Long countByCreatedDateBetween(Date from, Date to);
 
+  Long countByItemStatusAndCreatedDateBetween(ItemStatus status, Date from, Date to);
+
+  Long countByItemStatusAndUpdatedDateBetween(ItemStatus status, Date from, Date to);
+
 }
 
