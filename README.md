@@ -14,6 +14,15 @@ Below are straightforward steps your instructor can use to run the project.
 
 ---
 
+## IMPORTANT NOTE:
+### If you want to connect to a local postgres database you can ignore other parts and do the following:
+
+1. run command docker-compose up -d (to start local postgres database container in docker, the connection details to that database are set as default values in application.properties file)
+2. run gradle command (./gradlew bootRun or ./gradlew.bat bootRun) to start the application( you can also run the java file directly which is called LostLinkServerApplication)
+3. You can see error such as JAVA_HOME is not found, to fix it you must add jdk17+ folder path to this variable and restart machine to set it as environment variable
+
+#### 4. Admin username: admin, password: admin123
+
 ## 2. Environment configuration (`.env`)
 
 1. In the project root, copy the example file:
